@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data>
+	<section title="TITLE" id="1">
+		<item name="textarea" type="textarea" value="textarea" cols="50" rows="6">textarea</item>
+		<item name="checkbox" type="checkbox" value="1">checkbox</item>
+		<item name="text" type="text" value="text">input text</item>
+		<item name="password" type="password" value="password">input password</item>
+	</section>
+</data>
