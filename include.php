@@ -1,13 +1,16 @@
 <?php
-if(!CModule::IncludeModule('iblock'))
-	return false;
+class SiteConfigIncludeModule {
+    
+    /**
+     * Перед построением меню в админке подгружаем стили
+     * @global type $APPLICATION
+     * @param type $aGlobalMenu
+     * @param type $aModuleMenu 
+     */
+    function OnBuildGlobalMenu(&$aGlobalMenu, &$aModuleMenu) {
+        global $APPLICATION;
+        $APPLICATION->AddHeadString('<link rel="stylesheet" href="/bitrix/images/SiteConfig/icons.css" />');
+    }
+}
 
-IncludeModuleLangFile(__FILE__);
-
-CModule::AddAutoloadClasses(
-	'SiteConfig',
-	array('SiteConfig' => 'classes/general/SiteConfig.php',)
-);
-	
-	
-?>
+CModule::AddAutoloadClasses('SiteConfig', array('SiteConfig' => 'classes/general/SiteConfig.php'));

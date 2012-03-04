@@ -1,4 +1,4 @@
-<?
+<?php
 global $MESS;
 $strPath2Lang = str_replace("\\", "/", __FILE__);
 $strPath2Lang = substr($strPath2Lang, 0, strlen($strPath2Lang)-18);
@@ -26,27 +26,39 @@ Class SiteConfig extends CModule
 			$this->MODULE_VERSION = $arModuleVersion["VERSION"];
 			$this->MODULE_VERSION_DATE = $arModuleVersion["VERSION_DATE"];
 		}
-		else
-		{
-			$this->MODULE_VERSION = COMPRESSION_VERSION;
-			$this->MODULE_VERSION_DATE = COMPRESSION_VERSION_DATE;
-		}
-
+		
 		$this->MODULE_NAME = "Настройки сайта";
-		$this->MODULE_DESCRIPTION = "";
+		$this->MODULE_DESCRIPTION = "Модуль предназначен для хранения настроек сайта";
+                
+                $this->PARTNER_NAME = "Pupkov Semen";
+		$this->PARTNER_URI = "http://www.clever-site.ru";
 	}
 
 	function InstallDB($arParams = array())
 	{
 		RegisterModule("SiteConfig");
-
-		return true;
+                
+                // Регитрируем обработчик события перед построением меню в админке
+                RegisterModuleDependences(
+                        'main', 
+                        'OnBuildGlobalMenu', 
+                        $this->MODULE_ID, 
+                        'SiteConfigIncludeModule', 
+                        'OnBuildGlobalMenu');
+                return true;
 	}
 
 	function UnInstallDB($arParams = array())
 	{
 		UnRegisterModule("SiteConfig");
-		return true;
+		UnRegisterModuleDependences(
+                        'main', 
+                        'OnBuildGlobalMenu', 
+                        $this->MODULE_ID, 
+                        'SiteConfigIncludeModule', 
+                        'OnBuildGlobalMenu');
+		
+                return true;
 	}
 
 	function InstallEvents()
@@ -58,32 +70,51 @@ Class SiteConfig extends CModule
 	{
 		return true;
 	}
-
+	
 	function InstallFiles($arParams = array())
 	{
-	    //CopyDirFiles($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/SiteConfig/install/admin", $_SERVER["DOCUMENT_ROOT"]."/bitrix/admin", true, true);
-		@file_put_contents($_SERVER['DOCUMENT_ROOT'].'/bitrix/admin', '<?include($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/SiteConfig/admin/site_config.php");?>');
-	    return true;
+	    CopyDirFiles(
+			$_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/SiteConfig/install/admin", 
+			$_SERVER["DOCUMENT_ROOT"] . "/bitrix/admin", true, true);
+		
+		CopyDirFiles(
+			$_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/".$this->MODULE_ID."/install/images/", 
+			$_SERVER["DOCUMENT_ROOT"]."/bitrix/images/".$this->MODULE_ID."/", true, true);
+		
+		return true;
 	}
 
 	function UnInstallFiles()
 	{
-	   DeleteDirFiles($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/SiteConfig/install/admin", $_SERVER["DOCUMENT_ROOT"]."/bitrix/admin");	
-	   return true;
+	    DeleteDirFiles(
+	        $_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/SiteConfig/install/admin", 
+	        $_SERVER["DOCUMENT_ROOT"] . "/bitrix/admin");
+		
+		DeleteDirFiles(
+			$_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/".$this->MODULE_ID."/install/images/", 
+			$_SERVER["DOCUMENT_ROOT"]."/bitrix/images/".$this->MODULE_ID."/");
+		
+	    return true;
 	}
 
 	function DoInstall()
 	{
-	   global $DOCUMENT_ROOT, $APPLICATION;
-	   $this->InstallDB();
-	   $APPLICATION->IncludeAdminFile("Установка модуля конфигурации сайта", $DOCUMENT_ROOT."/bitrix/modules/compression/install/step.php");
+	    global $DOCUMENT_ROOT, $APPLICATION;
+	   
+	    if ($this->InstallDB()) {
+	        $this->InstallFiles();
+	    }
+	
+	    $APPLICATION->IncludeAdminFile("Установка модуля конфигурации сайта", $DOCUMENT_ROOT."/bitrix/modules/compression/install/step.php");
 	}
 
 	function DoUninstall()
 	{
-	   global $DOCUMENT_ROOT, $APPLICATION;
-	   $this->UnInstallDB();
-	   $APPLICATION->IncludeAdminFile("Удаление модуля конфигурации сайта", $DOCUMENT_ROOT."/bitrix/modules/compression/install/unstep.php");
+	    global $DOCUMENT_ROOT, $APPLICATION;
+	    if ($this->UnInstallDB()) {
+		    $this->UnInstallFiles();
+		}
+		
+	    $APPLICATION->IncludeAdminFile("Удаление модуля конфигурации сайта", $DOCUMENT_ROOT."/bitrix/modules/compression/install/unstep.php");
 	}
 }
-?>

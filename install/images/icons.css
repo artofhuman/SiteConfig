@@ -1,0 +1,6 @@
+#site_config_menu_icon {
+    background-image: url("/bitrix/images/SiteConfig/16_16_settings.png");
+}
+#site_config_page_icon {
+    background-image: url("/bitrix/images/SiteConfig/32_32_settings.png");
+}

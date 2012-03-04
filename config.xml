@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <data>
-	<section title="TITLE" id="1">
+	<section title="Пример вкладки настроек" id="tab1">
 		<item name="textarea" type="textarea" value="textarea" cols="50" rows="6">textarea</item>
-		<item name="checkbox" type="checkbox" value="1">checkbox</item>
+		<item name="checkbox" type="checkbox" value="0">checkbox</item>
 		<item name="text" type="text" value="text">input text</item>
-		<item name="password" type="password" value="password">input password</item>
+	</section>
+        
+        <section title="Пример 2 вкладки настроек" id="tab2">
+		<item name="html" type="html" value="html&lt;br /&gt;&#13;&#10;" cols="50" rows="6">HTML</item>
+		<item name="file" type="file" value="">file</item>
 	</section>
 </data>
